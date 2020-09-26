@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 10;
+            margin: 10;
+        }
+		nav	
+		{
+			background-color:#d0e4fe;
+			color:black;
+			text-align:center;
+		}
+		ul
+			{
+		    list-style-type: none;
+		    margin: 0;
+		    padding: 0;
+		    overflow: hidden;
+		    background-color: #333;
+			}
+		
+		li 
+			{
+		    float: left;
+			}
+		
+		li a 
+			{
+		    display: block;
+		    color: white;
+		    text-align: center;
+		    padding: 14px 16px;
+		    text-decoration: none;
+			}
+		
+		li a:hover 
+			{
+		    background-color: #111;
+			}
+		
+        </style>
+		
+        <title> Yunnan-Vietnam Railway</title>
+    </head>
+	
+    <body>
+		<div id="header" style="background-color:#f1f1f1; padding: 20px;text-align: center;">
+		<h2 style="text-align:center; font-family:arial;font-size:20px;">Railway Vietnam Railway Heritage</h2>
+		<h3 style="text-align:center; font-family:arial;font-size:10px;">View the historical and modern photos</h3>
+		</div>
+		
+		<ul>
+		  <li><a class="active" href="https://en.wikipedia.org/wiki/Kunming%E2%80%93Haiphong_railway" target = "_blank"> Introduction</a></li>
+		  <li><a href="https://www.mulhouse.fr/bouger-sortir/culture/archives/" target = "_blank"> Archive Mulhouse </a></li>
+		  <li><a href="http://www.archivesnationales.culture.gouv.fr/anom/en/index.html" target = "_blank"> Archive Provence </a>
+		  <li><a href = "https://vietnam-railway.com/" target = "_blank"> Vietnam Railway</a></li>
+		  <li><a href = "http://www.tielu.cn/kunming/" target = "_blank"> Yunnan Railway </a> </li>
+		  <li><a href= "mailto: kun.sang@phd.unipd.it" target="_blank"> Contact </a></li>
+		  <li><a href="https://www.researchgate.net/profile/Kun_Sang" target="_blank">About Author</a></li>
+		</ul>
+		
+		<div id="menu" style="background-color:#FFD700;height:700px;width:200px;float:left;">
+		<b>Examples</b><br>
+		Photo.1 k120950<br>
+		<img border="0" src="k120950.jpg"  width="200" height="150">
+		Photo.2 k143575<br>
+		<img border="0" src="k143575.jpg"  width="200" height="150">
+		Photo.3 k144400 <br>
+		<img border="0" src="k144400.jpg"  width="200" height="150">
+		Photo.4 k146200 <br>
+		<img border="0" src="k146200.jpg"  width="200" height="150">
+		</div>
+		
+		<div id="menu" style="background-color:#FFD700;height:700px;width:200px;float:right;">
+		<b>Examples</b><br>
+		Photo.1 Bisezhai<br>
+		<img border="0" src="IMG_3825.jpg"  width="200" height="150">
+		Photo.2 Hanoi<br>
+		<img border="0" src="IMG_4074.jpg"  width="200" height="150">
+		Photo.3 Gebishi
+		<img border="0" src="IMG_E3746.jpg"  width="200" height="150">
+		Photo.4  Kaiyuan
+		<img border="0" src="IMG_E3807.jpg"  width="200" height="150">
+		</div>
+		
+		
+        <div id="map" style="background-color:#D8D8D8;height:700px;width:900px;padding-right: 50px;float:left;">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/CFY_line_1.js"></script>
+        <script src="data/All_photos_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[21.67167162923737,101.07698649486895],[26.079901344678653,106.15020342328565]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OpenStreetMapMonochrome_0');
+        map.getPane('pane_OpenStreetMapMonochrome_0').style.zIndex = 400;
+        var layer_OpenStreetMapMonochrome_0 = L.tileLayer('http://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMapMonochrome_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMapMonochrome_0;
+        map.addLayer(layer_OpenStreetMapMonochrome_0);
+        function pop_CFY_line_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(feature.properties['OBJECTID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Leng'] !== null ? autolinker.link(feature.properties['Shape_Leng'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Section'] !== null ? autolinker.link(feature.properties['Section'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_CFY_line_1_0() {
+            return {
+                pane: 'pane_CFY_line_1',
+                opacity: 1,
+                color: 'rgba(251,11,11,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_CFY_line_1_1() {
+            return {
+                pane: 'pane_CFY_line_1',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CFY_line_1');
+        map.getPane('pane_CFY_line_1').style.zIndex = 401;
+        map.getPane('pane_CFY_line_1').style['mix-blend-mode'] = 'normal';
+        var layer_CFY_line_1 = new L.geoJson.multiStyle(json_CFY_line_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CFY_line_1',
+            layerName: 'layer_CFY_line_1',
+            pane: 'pane_CFY_line_1',
+            onEachFeature: pop_CFY_line_1,
+            styles: [style_CFY_line_1_0,style_CFY_line_1_1,]
+        });
+        bounds_group.addLayer(layer_CFY_line_1);
+        map.addLayer(layer_CFY_line_1);
+        function pop_All_photos_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Date</th>\
+                        <td>' + (feature.properties['Date'] !== null ? autolinker.link(feature.properties['Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Time</th>\
+                        <td>' + (feature.properties['Time'] !== null ? autolinker.link(feature.properties['Time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lon</th>\
+                        <td>' + (feature.properties['Lon'] !== null ? autolinker.link(feature.properties['Lon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lat</th>\
+                        <td>' + (feature.properties['Lat'] !== null ? autolinker.link(feature.properties['Lat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Altitude</th>\
+                        <td>' + (feature.properties['Altitude'] !== null ? autolinker.link(feature.properties['Altitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Camera Mod</th>\
+                        <td>' + (feature.properties['Camera Mod'] !== null ? autolinker.link(feature.properties['Camera Mod'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Path'] !== null ? autolinker.link(feature.properties['Path'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RelPath'] !== null ? autolinker.link(feature.properties['RelPath'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><img src="' + feature.properties['RelPath'] + '" width="500" height="400" ></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Author</th>\
+                        <td>' + (feature.properties['Author'] !== null ? autolinker.link(feature.properties['Author'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Copyright</th>\
+                        <td>' + (feature.properties['Copyright'] !== null ? autolinker.link(feature.properties['Copyright'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_All_photos_2_0(feature) {
+            switch(String(feature.properties['Type'])) {
+                case 'Historical':
+                    return {
+                pane: 'pane_All_photos_2',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(61,128,53,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(19,231,157,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Modern':
+                    return {
+                pane: 'pane_All_photos_2',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(61,128,53,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,185,103,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_All_photos_2');
+        map.getPane('pane_All_photos_2').style.zIndex = 402;
+        map.getPane('pane_All_photos_2').style['mix-blend-mode'] = 'normal';
+        var layer_All_photos_2 = new L.geoJson(json_All_photos_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_All_photos_2',
+            layerName: 'layer_All_photos_2',
+            pane: 'pane_All_photos_2',
+            onEachFeature: pop_All_photos_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_All_photos_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_All_photos_2);
+        map.addLayer(layer_All_photos_2);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'All_photos<br /><table><tr><td style="text-align: center;"><img src="legend/All_photos_2_Historical0.png" /></td><td>Historical</td></tr><tr><td style="text-align: center;"><img src="legend/All_photos_2_Modern1.png" /></td><td>Modern</td></tr></table>': layer_All_photos_2,'<img src="legend/CFY_line_1.png" /> CFY_line': layer_CFY_line_1,"OpenStreetMap Monochrome": layer_OpenStreetMapMonochrome_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+
+		<div id="footer" style="background-color:#FDF5E6;clear:both;font-family:arial;text-align:center; font-size:10px;">
+		Copyright © University of Padova: Kun Sang. All Rights Reserved</div>
+		
+		</div>
+    </body>
+</html>
